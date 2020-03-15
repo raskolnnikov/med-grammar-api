@@ -1,0 +1,128 @@
+{% extends 'layout.html' %}
+{% block content %}
+
+{% if not sents and not called%}
+<div class="container">
+    <div class="row">
+        <div class="col-6">
+            <h1 class="text-left mb-4">Text</h1>
+            <form class="form-horizontal" role="form" id="searchForm"
+                  name="searchForm" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <textarea class="form-control" name="text-block" id="text-block"
+                              rows="18"></textarea>
+                </div>
+                <label class="h2">Guideline Check :</label>
+                  <select class="form-control" name="option">
+                      {% for x in ['DEA guideline (Standard units check)'] %}
+                          <option value="{{ x }}"{% if loop.first %} SELECTED{% endif %}>{{ x }}</option>
+                      {% endfor %}
+                  </select>
+                  <br><br>
+                <button type="submit" class="btn u-btn-primary btn-xl" id="submit">
+                    <span class="h3">
+                        <i class="fas fa-search" aria-hidden="true"></i>
+                        Process
+                    </span>
+                </button>
+            </form>
+
+
+        </div>
+        <div class="col-6">
+            <h1 class="text-left mb-4">File</h1>
+            {{ dropzone.create(action='views.upload') }}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% if called %}
+<div class="container">
+    <div class="col-12">
+        <div class="media g-mb-15">
+
+            <div class="d-flex align-self-center mr-4">
+              <span class="u-icon-v2 u-icon-size--lg g-brd-3 g-brd-primary g-color-black g-rounded-50x g-mb-25 ">
+                      <i class="g-font-style-normal">{{ c }}</i>
+              </span>
+            </div>
+            <div class="media-body align-self-center mb-2">
+              <h1 class="h1 g-color-black mb-2">Sentences were flagged </h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endif %}
+
+{% if highlighted_text%}
+<div class="container">
+    <div class="col-12">
+        <div class="card">
+            <div class="row">
+
+              <div class="col-md-10">
+                <!-- Tab panes -->
+                <div id="nav-2-1-accordion-primary-ver" class="tab-content">
+                      {{highlighted_text|safe}}
+                </div>
+                <!-- End Tab panes -->
+              </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+        <div class="card">
+                {% for span in flagged_spans %}
+                    <div class="col-6 g-mb-10 g-ml-0 g-pl-0">
+                    <article class="text-center g-bg-white">
+                        <!-- Article Image -->
+                        <div class="g-pos-rel">
+                            <div class="u-ribbon-v1 g-width-160 g-bg-blue g-font-weight-600 g-font-size-14 g-top-0 g-right-0 p-0">
+                                <span class="d-block g-color-white g-py-15">
+                                    {{flagged_reasons[loop.index-1]}}
+                                </span>
+                            </div>
+                        </div>
+                        <!-- End Article Image -->
+
+                        <!-- Article Content -->
+                        <div class="u-shadow-v24 g-pa-30">
+                            <!-- Article Info -->
+                            <h3 class="h4 g-mb-10 text-left g-font-weight-600">
+                                {{loop.index}}.{{span.text}}
+                            </h3>
+                            <h3 class="h5 g-mb-10 text-left g-line-height-1_6 g-font-size-15">
+                                <span>
+                                    <span class="g-color-blue font-weight-bold">Suggested corrections:</span>
+                                </span>
+                                <br>
+
+                            </h3>
+
+                            {% for sug in suggestions[loop.index-1] %}
+                            <span style="padding-left: 0px; margin-left:0px;" class="h4 g-color-orange font-weight-bold text-left"> {{sug}}</span><br>
+                            {% endfor %}
+
+                            <!-- End Article Info -->
+                        </div>
+                        <!-- End Article Content -->
+                    </article>
+                    <!-- End Article -->
+                    </div>
+                {%endfor%}
+        </div>
+</div>
+
+
+
+
+
+
+{% endif %}
+{% endblock %}

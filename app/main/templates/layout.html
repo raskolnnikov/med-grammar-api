@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content=">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ url_for('static', filename='img/logo/favicon.ico') }}">
+
+    <title>Grammar Tools</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/icon-awesome/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/icon-line/css/simple-line-icons.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/icon-hs/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/icon-line-pro/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/wait-animate.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendor/cubeportfolio-full/cubeportfolio/css/cubeportfolio.min.css') }}">
+
+    <!-- CSS Unify Theme -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.e-commerce.css') }}">
+    <!-- CSS Unify -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unify-core.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unify-components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unify-globals.css') }}">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
+    {{ dropzone.load_css() }}
+    {{ dropzone.style('border: 2px dashed #0087F7; margin: 10px 0 10px; min-height: 400px; width: 800px') }}
+
+</head>
+
+<body>
+<!-- Header -->
+    <header id="js-header" class="u-header u-header--sticky-top u-header--show-hide u-header--toggle-section" data-header-fix-moment="100" data-header-fix-effect="slide">
+      <div class="u-header__section u-header__section--dark g-bg-black-opacity-0_7 g-py-5">
+        <nav class="navbar navbar-expand-lg">
+          <div class="container">
+            <!-- Responsive Toggle Button -->
+            <button class="navbar-toggler navbar-toggler-right btn g-line-height-1 g-brd-none g-pa-0 g-pos-abs g-top-3 g-right-0" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navBar" data-toggle="collapse" data-target="#navBar">
+              <span class="hamburger hamburger--slider">
+            <span class="hamburger-box">
+              <span class="hamburger-inner"></span>
+              </span>
+              </span>
+            </button>
+            <!-- End Responsive Toggle Button -->
+
+            <!-- Logo -->
+            <a href="../../../index.html" class="navbar-brand">
+                <h1 class="h3 ml-3 text-bold">
+                    Medical Domain Grammar Tools
+                </h1>
+            </a>
+            <!-- End Logo -->
+
+            <!-- Navigation -->
+            <div class="collapse navbar-collapse align-items-left flex-sm-row g-pt-10 g-pt-5--lg mr-2" id="navBar">
+              <ul class="navbar-nav text-uppercase g-font-weight-600 ml-auto">
+                <li class="nav-item g-mx-20--lg active">
+                  <a href="{{url_for('views.analyze')}}" class="nav-link px-0">Analyze Text
+                <span class="sr-only">(current)</span>
+              </a>
+                </li>
+
+                  <li class="nav-item g-mx-20--lg active">
+                    <a href="{{url_for('views.test')}}" class="nav-link px-0">Run Tests
+                  <span class="sr-only">(current)</span>
+                </a>
+                  </li>
+              </ul>
+            </div>
+            <!-- End Navigation -->
+          </div>
+        </nav>
+      </div>
+    </header>
+    <!-- End Header -->
+
+    {% block content %}{% endblock %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- JS Customization -->
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+    <!-- JS Plugins Init. -->
+
+    <!-- <script src="assets/js/jquery-3.3.1.min.js"></script>
+    <script src="assets/js/popper.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script> -->
+
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/jquery-migrate/jquery-migrate.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.js') }}"></script>
+
+    <!-- JS Implementing Plugins -->
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/appear.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/slick-carousel/slick/slick.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='vendor/cubeportfolio-full/cubeportfolio/js/jquery.cubeportfolio.min.js') }}"></script>
+
+
+    <!-- JS Unify -->
+    <script src="{{ url_for('static', filename='js/hs.core.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.cubeportfolio.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.header.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/helpers/hs.hamburgers.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.dropdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.scrollbar.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.countdown.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.carousel.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.go-to.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/components/hs.count-qty.js') }}"></script>
+
+    <!-- JS Plugins Init. -->
+    <script  src="{{ url_for('static', filename='js/components/hs.progress-bar.js') }}"></script>
+    <script  src="{{ url_for('static', filename='js/components/hs.counter.js') }}"></script>
+    <script  src="{{ url_for('static', filename='js/components/hs.tabs.js') }}"></script>
+
+    <!-- JS Plugins Init. -->
+    <script>
+      $(document).on('ready', function () {
+        //$('[data-toggle="tooltip"]').tooltip();
+      });
+      $(window).load(function() {
+          $(".loader").fadeOut("fast");
+      });
+      $("#searchForm").submit(function(event) {
+          $(".loader").fadeIn("fast");
+      });
+
+    </script>
+    {{ dropzone.load_js() }}
+    {{ dropzone.config() }}
+<div id="circle">
+  <div class="loader">
+    <div class="loader">
+        <div class="loader">
+           <div class="loader">
+
+           </div>
+        </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

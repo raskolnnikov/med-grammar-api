@@ -1,0 +1,193 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    margin-top: 80px;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    line-height: 60px; /* Vertically center the text there */
+    background-color: #f5f5f5;
+}
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+    padding: 20px 15px 0;
+    padding-bottom: 15px;
+}
+
+body > .container .pt9 {
+    padding-top: 30px;
+}
+
+.footer > .container {
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+code {
+    font-size: 80%;
+}
+
+.dropdown.dropdown-lg .dropdown-menu {
+    margin-top: -1px;
+    padding: 6px 20px;
+}
+
+.input-group-btn .btn-group {
+    display: flex !important;
+}
+
+.btn-group .btn {
+    border-radius: 0;
+    margin-left: -1px;
+}
+
+.btn-group .btn:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.btn-group .form-horizontal .btn[type="submit"] {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.form-horizontal .form-group {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.form-group .form-control:last-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+@media screen and (min-width: 768px) {
+    #adv-search {
+        width: 98%;
+        margin-bottom: 5px;
+    }
+
+    #adv-search2 {
+        width: 95%;
+        margin-bottom: 5px;
+    }
+
+    .dropdown.dropdown-lg {
+        position: static !important;
+    }
+
+    .dropdown.dropdown-lg .dropdown-menu {
+        min-width: 518px;
+    }
+}
+
+.u-progress__pointer-v4 {
+    top: 50%;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    margin: -15px -15px 0 0;
+    background-color: transparent;
+    line-height: 30px;
+    z-index: 1;
+}
+
+.navbar {
+    padding: 0px;
+}
+
+.u-nav-v4-1-column .nav {
+    width: 15%;
+}
+
+.u-nav-v4-1-column .tab-content {
+    width: 85%;
+}
+
+.nav-item-v-50 {
+    height: 50%;
+}
+
+.display-5-sm {
+    font-size: 2.2rem;
+}
+
+.btn {
+    font-weight: normal;
+}
+
+.u-btn-outline-lightgray {
+    border-color: lightgrey;
+}
+
+.progress {
+    background-color: cornflowerblue;
+}
+
+.table-responsive tbody > tr > td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+#circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+}
+
+.loader {
+    width: calc(100% - 0px);
+    height: calc(100% - 0px);
+    border: 8px solid #162534;
+    border-top: 8px solid #09f;
+    border-radius: 50%;
+    animation: rotate 5s linear infinite;
+}
+
+@keyframes rotate {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.entity {
+    padding: 0.45em 0.6em;
+    margin: 0 0.25em;
+    line-height: 1;
+    border-radius: 0.35em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+.anotation {
+    font-size: 0.8em;
+    font-weight: bold;
+    line-height: 1;
+    border-radius: 0.35em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+}
+
+.col-6s{
+    max-width: 48%;
+}

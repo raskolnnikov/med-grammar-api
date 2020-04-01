@@ -12,6 +12,7 @@ import docx2txt
 import os
 from symspellpy import SymSpell, Verbosity
 import glob
+import logging
 
 from ..model.grammar_objects import Span, N_Tuple, Sentence, Text_Object, Flagged_Item
 
@@ -80,11 +81,14 @@ def find_suspect_word(trigram_list):
 
 # Exclude some words from being considered suspect, e.g.: stop words such as 'if', 'of', 'and'
 def excluded(w):
-    return (len(w.text)==3 and w.text.lower() in current_app.nlp.Defaults.stop_words
+    return (len(w.text)==3 and is_stopword(w.text.lower())
         or len(w.text)<3)
 
 def has_stopword_majority(trigram):
-    return sum([w in current_app.nlp.Defaults.stop_words for w in trigram if len(w) < 4]) > 1
+    return sum([is_stopword(w) for w in trigram if len(w) < 4]) > 1
+
+def is_stopword(word):
+    return word in current_app.nlp.Defaults.stop_words
 
 def get_spelling_suggestion(w, spell_checker):
     try:
@@ -123,47 +127,59 @@ def is_trigram_known(t, counter):
     return t in counter
 
 def find_words_out_of_context(text_object, trigram_counter, spell_checker):
+    logging.basicConfig(
+        filename=current_app.config['UPLOADED_PATH']+"logfile.log",
+        level=logging.INFO
+    )
+
     sentences = []
     candidates = []
     unknowns = []
     for sentence in text_object.sents:
         suspect_trigrams = find_suspect_trigrams(sentence, trigram_counter)
-        print("suspect trigrams = ")
+        logging.info("suspect trigrams = ")
         for t in suspect_trigrams:
-            print("\t"+str(t))
+            logging.info("\t"+str(t))
 
         suspects = find_suspect_word(suspect_trigrams)
-        print("suspects = ")
+        logging.info("suspects = ")
         for s in suspects:
-            print("\t"+str(s))
+            logging.info("\t"+str(s))
 
         scores = np.zeros(len(suspects))
         for i, span in enumerate(suspects):
             word_trigrams = get_word_trigrams(span, suspect_trigrams)
             suggestions = get_spelling_suggestion(span.text, spell_checker)
-            print('------------------------')
-            print('word = %s' % span.text)
+            logging.info('------------------------')
+            logging.info('word = %s' % span.text)
             for t in word_trigrams:
                 for s in suggestions:
                     new_trigram = replace_in_list(t.text_tuple, span.text.lower(), s.lower())
-                    #print('-------------------------------------')
-                    #print("old trigram: %s" %(str(t)))
-                    #print("new trigram: %s" %(str(new_trigram)))
-                    #print('-------------------------------------')
+                    #logging.info('-------------------------------------')
+                    #logging.info("old trigram: %s" %(str(t)))
+                    #logging.info("new trigram: %s" %(str(new_trigram)))
+                    #logging.info('-------------------------------------')
+                    if is_trigram_known(new_trigram, trigram_counter):
+                        if not has_stopword_majority(new_trigram):
+                                logging.info("old trigram: %s" %(str(t)))
+                                logging.info("new trigram: %s" %(str(new_trigram)))
+                                #logging.info('--------------------')
+                                #logging.info('valid swap!')
+                                #logging.info('--------------------')
+                                scores[i] += 1
+                                if span.dist_from_first < 2 or span.dist_from_last < 2:
+                                    scores[i] += 1
+                        else:
+                            if not is_stopword(span.text.lower()):
+                                logging.info('trigram = %s' % str(new_trigram))
+                                logging.info('non_stopword = %s' % span)
+                                logging.info('added one!')
+                                scores[i] += 1
 
-                    if not has_stopword_majority(new_trigram) and is_trigram_known(new_trigram, trigram_counter):
-                        print("old trigram: %s" %(str(t)))
-                        print("new trigram: %s" %(str(new_trigram)))
-                        #print('--------------------')
-                        #print('valid swap!')
-                        #print('--------------------')
-                        scores[i] += 1
-                        if span.dist_from_first < 2 or span.dist_from_last < 2:
-                            scores[i] += 1
-            print('------------------------')
+            logging.info('------------------------')
 
-        print("scores:")
-        print(scores)
+        logging.info("scores:")
+        logging.info(scores)
         style_candidates = []
         flagged_units = {}
         for u in set(flagged_units.items()):

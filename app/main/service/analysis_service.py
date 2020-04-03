@@ -1,3 +1,4 @@
+
 import uuid
 import datetime
 import numpy as np
@@ -67,8 +68,12 @@ def find_suspect_word(trigram_list):
                 f[span] += 1
                 if span.dist_from_first < 3:
                     f[span] += 1
+                    if span.dist_from_first == 0:
+                        f[span] += 1
                 elif span.dist_from_last < 3:
                     f[span] += 1
+                    if span.dist_from_last == 0:
+                        f[span] += 1
     keys = np.array(list(f.keys()))
     values = np.array(list(f.values()))
     if not len(values):
@@ -129,13 +134,18 @@ def is_trigram_known(t, counter):
 def find_words_out_of_context(text_object, trigram_counter, spell_checker):
     logging.basicConfig(
         filename=current_app.config['UPLOADED_PATH']+"logfile.log",
-        level=logging.INFO
+        level=logging.INFO,
+        filemode='w'
+
     )
 
     sentences = []
     candidates = []
     unknowns = []
     for sentence in text_object.sents:
+        logging.info("xxxxxxxxxxxxxxxxxxx")
+        logging.info("-------------------")
+
         suspect_trigrams = find_suspect_trigrams(sentence, trigram_counter)
         logging.info("suspect trigrams = ")
         for t in suspect_trigrams:
@@ -147,45 +157,63 @@ def find_words_out_of_context(text_object, trigram_counter, spell_checker):
             logging.info("\t"+str(s))
 
         scores = np.zeros(len(suspects))
+        suspect_data_log = defaultdict(dict)
         for i, span in enumerate(suspects):
+            suspect_data_log[span] = {
+                'span_suspect_trigrams': [],
+                'span_trigram_frequency_score': 0,
+                'span_score': 0
+            }
+
             word_trigrams = get_word_trigrams(span, suspect_trigrams)
             suggestions = get_spelling_suggestion(span.text, spell_checker)
-            logging.info('------------------------')
-            logging.info('word = %s' % span.text)
             for t in word_trigrams:
+                trigram_data_log = {
+                    'trigram': t.text_tuple,
+                    'valid_trigram_suggestions': [],
+                }
                 for s in suggestions:
                     new_trigram = replace_in_list(t.text_tuple, span.text.lower(), s.lower())
-                    #logging.info('-------------------------------------')
-                    #logging.info("old trigram: %s" %(str(t)))
-                    #logging.info("new trigram: %s" %(str(new_trigram)))
-                    #logging.info('-------------------------------------')
                     if is_trigram_known(new_trigram, trigram_counter):
-                        if not has_stopword_majority(new_trigram):
-                                logging.info("old trigram: %s" %(str(t)))
-                                logging.info("new trigram: %s" %(str(new_trigram)))
-                                #logging.info('--------------------')
-                                #logging.info('valid swap!')
-                                #logging.info('--------------------')
-                                scores[i] += 1
-                                if span.dist_from_first < 2 or span.dist_from_last < 2:
+                        tg_freq = current_app.trigram_counter[new_trigram]
+                        trigram_suggestion_data_log = {
+                                                        'trigram': new_trigram,
+                                                        'freq': tg_freq,
+                                                        'stopword_majority_flag': False,
+                                                        'flipped_stopword_flag': False,
+                                                        'boundary_span_flag': False
+                        }
+                        if not is_stopword(span.text.lower()):
+                            suspect_data_log[span]['span_trigram_frequency_score'] += tg_freq
+
+                            if span.dist_from_first == 0 or span.dist_from_last == 0:
+                                scores[i] += 2
+                                suspect_data_log[span]['span_score'] += 2
+                                trigram_suggestion_data_log['boundary_span_flag'] = True
+                            elif span.dist_from_first == 1 or span.dist_from_last == 1:
+                                scores[i] += 0.5
+                                suspect_data_log[span]['span_score'] += 0.5
+                                trigram_suggestion_data_log['boundary_span_flag'] = True
+                            if not has_stopword_majority(new_trigram):
                                     scores[i] += 1
-                        else:
-                            if not is_stopword(span.text.lower()):
-                                logging.info('trigram = %s' % str(new_trigram))
-                                logging.info('non_stopword = %s' % span)
-                                logging.info('added one!')
-                                scores[i] += 1
+                                    suspect_data_log[span]['span_score'] += 1
+                            else:
+                                    scores[i] += 0.5
+                                    suspect_data_log[span]['span_score'] += 0.5
+                            trigram_data_log['valid_trigram_suggestions'].append(trigram_suggestion_data_log)
 
-            logging.info('------------------------')
 
-        logging.info("scores:")
-        logging.info(scores)
+
+                suspect_data_log[span]['span_suspect_trigrams'].append(trigram_data_log)
+        log_suspect_data(suspect_data_log, logging)
         style_candidates = []
         flagged_units = {}
         for u in set(flagged_units.items()):
             style_candidates.append(u)
         candidates += list([ (c,'semantically_suspect') for c in suspects[np.argwhere(scores>1)].flatten()])
         unknowns += [(s, 'unknown_word_in_context_vocabulary') for s in suspects[np.argwhere(scores==0)].flatten() if s.text.lower() not in current_app.dictionary]
+        logging.info("-------------------")
+        logging.info("xxxxxxxxxxxxxxxxxxx")
 
     flagged = candidates+unknowns
     flagged_spans = []
@@ -198,6 +226,24 @@ def find_words_out_of_context(text_object, trigram_counter, spell_checker):
         suggested_corrections.append(get_spelling_suggestion(c[0].text, spell_checker)[:3])
 
     return flagged_spans, flagged_reasons, suggested_corrections
+
+def log_suspect_data(data, logger):
+        from pprint import pformat
+        for span in data.keys():
+            logger.info('*********************')
+            logger.info('SPAN = %s' %(str(span)))
+            logger.info('SPAN TRIPLE FREQUENCY SCORE = %i' %(data[span]['span_trigram_frequency_score']))
+            logger.info('SPAN TOTAL SCORE = %i' %(data[span]['span_score']))
+            logger.info('SPAN SUSPECT TRIGRAMS')
+            for t in data[span]['span_suspect_trigrams']:
+                logger.info('\tTRIGRAM = %s' %(str(t['trigram'])))
+                for vt in t['valid_trigram_suggestions']:
+                    logger.info('\t\tNEW TRIGRAM = %s' %(str(vt['trigram'])))
+                    logger.info('\t\t\tFREQUENCY = %s' %(str(vt['freq'])))
+                    logger.info('\t\t\tSTOPWORD MAJ FLAG = %s' %(str(vt['stopword_majority_flag'])))
+                    logger.info('\t\t\tFIPPED STOPWORD FLAG = %s' %(str(vt['flipped_stopword_flag'])))
+                    logger.info('\t\t\tBOUNDARY SPAN FLAG = %s' %(str(vt['boundary_span_flag'])))
+            logger.info('__*****************__')
 
 def find_trigrams_with_words(word_list):
     for t in trigram_counter:

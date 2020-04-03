@@ -1,0 +1,14 @@
+New FP:
+
+test_fp_lemma_stopword_fix (4).txt 
+test_fp_lemma_stopword_fix (2).txt 
+test_fp_lemma_stopword_fix (1).txt 
+
+New TP:
+test_ (34).txt 
+test_ (27).txt 
+test_ (13).txt 
+test_ (10).txt 
+test_ (1).txt 
+test_fn_boundary_ (10).txt 
+test_fn_ (20).txt 
